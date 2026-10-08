@@ -2,7 +2,7 @@
 
 Designed & developed by Sardar Haris
 
-Signed RadiusOne releases (installer, images, production configuration). Newest: **0.1.3**.
+Signed RadiusOne releases (installer, images, production configuration). Newest: **0.1.4**.
 
 Install on a fresh Ubuntu 22.04/24.04, Debian 12 or Rocky/Alma 9 server (it asks for the domain and the network):
 
