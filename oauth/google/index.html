@@ -1,0 +1,51 @@
+<!doctype html>
+<!-- RadiusOne Google Drive relay (published on the release repository's GitHub Pages and
+     registered with Google as the OAuth redirect address). Google sends the browser here
+     after "Allow"; this page only hands the answer to the RadiusOne panel that asked for
+     it (the address in `state`, always its Google Drive settings page). It keeps nothing.
+     Designed & developed by Sardar Haris -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex">
+<title>RadiusOne · Google Drive</title>
+<style>
+  body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; margin: 0; min-height: 100vh;
+         display: grid; place-items: center; background: #f0f3f5; color: #23282c; }
+  main { background: #fff; padding: 2rem 2.4rem; border-radius: 6px; max-width: 30rem;
+         box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08); text-align: center; }
+  @media (prefers-color-scheme: dark) { body { background: #181b1e; color: #e4e7ea; } main { background: #23282c; } }
+</style>
+</head>
+<body>
+<main>
+  <h1 style="font-size: 1.2rem">RadiusOne</h1>
+  <p id="msg">Returning to your RadiusOne panel…</p>
+  <p style="font-size: 0.8rem; opacity: 0.7">Designed &amp; developed by Sardar Haris</p>
+</main>
+<script>
+(function () {
+  var q = new URLSearchParams(window.location.search);
+  var msg = document.getElementById("msg");
+  try {
+    var raw = (q.get("state") || "").replace(/-/g, "+").replace(/_/g, "/");
+    var st = JSON.parse(window.atob(raw + "===".slice((raw.length + 3) % 4)));
+    var to = new URL(st.r);
+    var path = to.pathname.replace(/\/+$/, "");
+    if (!/^https?:$/.test(to.protocol) || !path.endsWith("/tools/backup/google-drive") || to.search || to.hash || to.username || to.password) {
+      throw new Error("not a RadiusOne panel");
+    }
+    var out = new URLSearchParams();
+    ["code", "state", "error"].forEach(function (k) {
+      if (q.get(k)) out.set(k, q.get(k));
+    });
+    window.location.replace(to.origin + path + "?" + out.toString());
+  } catch (e) {
+    msg.textContent = "This page only returns Google's answer to a RadiusOne panel. Start again from Settings > Backup > Google Drive Settings > Authorize Now.";
+  }
+})();
+</script>
+</body>
+</html>
